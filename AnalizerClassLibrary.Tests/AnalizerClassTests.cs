@@ -13,28 +13,14 @@ public class AnalizerClassTests
         _dbManager = new DbManager();
     }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(3)]
-    public void CreateStack_ShouldReturnCorrectResult_WhenGivenSimpleArithmeticExpression(int id)
+    [Fact]
+    public void CheckCurerncy_ShouldReturnExpectedResult()
     {
-        TestAnalaizer(id);
-    }
-
-    [Theory]
-    [InlineData(5)]
-    [InlineData(2)]
-    public void CreateStack_ShouldReturnCorrectResult_WhenGivenExpressionWithBrackets(int id)
-    {
-        TestAnalaizer(id);
-    }
-
-    [Theory]
-    [InlineData(4)]
-    [InlineData(6)]
-    public void CreateStack_ShouldReturnCorrectResult_WhenGivenExpressionWithSingleNumber(int id)
-    {
-        TestAnalaizer(id);
+        var ids = _dbManager.GetAllIds();
+        foreach (string id in ids)
+        {
+            TestAnalaizer(int.Parse(id));
+        }
     }
 
     private void TestAnalaizer(int id)
@@ -42,12 +28,11 @@ public class AnalizerClassTests
         //Arrange
         ExpressionData expressionData = _dbManager.GetExpressionById(id);
         AnalaizerClass.expression = expressionData.Expression;
-        ArrayList expectedArray = new(expressionData.ExpectedResult.Split(','));
 
         //Act
-        ArrayList result = AnalaizerClass.CreateStack();
+        bool result = AnalaizerClass.CheckCurrency();
 
         //Assert
-        Assert.Equal(result, expectedArray);
+        Assert.Equal(result, expressionData.ExpectedResult);
     }
 }

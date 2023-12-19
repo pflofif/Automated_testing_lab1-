@@ -1,4 +1,7 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace AnalizerClassLibrary.Tests;
@@ -6,7 +9,7 @@ namespace AnalizerClassLibrary.Tests;
 public class ExpressionData
 {
     public string Expression { get; set; }
-    public string ExpectedResult { get; set; }
+    public bool ExpectedResult { get; set; }
 }
 
 public class DbManager
@@ -30,8 +33,29 @@ public class DbManager
         if (reader.Read())
         {
             expressionData.Expression = reader["Expression"].ToString();
-            expressionData.ExpectedResult = reader["ExpectedResult"].ToString();
+            expressionData.ExpectedResult = reader["ExpectedResult"].ToString() == "1";;
         }
         return expressionData;
+    }
+
+    public List<string> GetAllIds()
+    {
+        List<string> ids = new List<string>(); // Створюємо список для збереження ID
+
+        ExpressionData expressionData = new();
+
+        using SqlConnection connection = new(ConnectionString);
+        
+        connection.Open();
+        string query = "SELECT Id FROM ArithmeticExpressions";
+        using SqlCommand command = new(query, connection);
+        using SqlDataReader reader = command.ExecuteReader();
+        while (reader.Read()) // Проходимо через кожен рядок результатів
+        {
+            // Додаємо ID до списку
+            ids.Add(reader["Id"].ToString()); // Переводимо значення в строку та додаємо до списку
+        }
+
+        return ids;
     }
 }

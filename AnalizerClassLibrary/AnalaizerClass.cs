@@ -83,8 +83,7 @@ namespace AnalaizerClassLibrary
         /// метод біжить по вхідному виразу, символ за символом аналізуючи його, і рахуючи кількість дужок.
         /// У разі виникнення помилки повертає false, а в erposition записує позицію, на якій виникла помилка.
         public static bool CheckCurrency()
-        {
-            erposition = 0;
+        {  erposition = 0;
 
             Stack<int> openBracket = new Stack<int>();
 
